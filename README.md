@@ -56,6 +56,8 @@ Flashing uses whatever you already have installed: `st-flash`/`st-info` (stlink)
 
 ## Example session
 
+![mcp-serial example session over loop://](docs/session.gif)
+
 `examples/session.py` drives the server as a real MCP client over stdio, using pyserial's `loop://` so it runs without hardware:
 
 ```
