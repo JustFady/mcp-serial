@@ -1,0 +1,35 @@
+[project]
+name = "mcp-serial"
+version = "0.1.0"
+description = "MCP server that lets AI assistants list ports, drive a serial console, tail firmware logs, and flash STM32/ESP32 boards safely."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Fady Youssef" }]
+requires-python = ">=3.11"
+dependencies = ["mcp>=2.3", "pyserial>=3.5"]
+keywords = ["mcp", "model-context-protocol", "serial", "embedded", "stm32", "esp32", "firmware", "claude"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Embedded Systems",
+]
+
+[project.urls]
+Repository = "https://github.com/JustFady/mcp-serial"
+
+[project.scripts]
+mcp-serial = "mcp_serial.server:main"
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_serial"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
