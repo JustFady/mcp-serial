@@ -1,5 +1,7 @@
 # mcp-serial
 
+[![ci](https://github.com/JustFady/mcp-serial/actions/workflows/ci.yml/badge.svg)](https://github.com/JustFady/mcp-serial/actions/workflows/ci.yml)
+
 An [MCP](https://modelcontextprotocol.io) server that lets Claude, Cursor, or any MCP client work with your microcontroller the way you do at a serial console: list ports, open a session, send commands, read and filter the output, and flash firmware to STM32 or ESP32 boards. Flashing is gated behind an explicit `confirm=true` and an allow-listed firmware directory, so the assistant can't overwrite a board by accident.
 
 ```
@@ -51,6 +53,24 @@ Flashing uses whatever you already have installed: `st-flash`/`st-info` (stlink)
 | `flash_esp32(firmware_path, port, address="0x10000", chip="auto", baud, confirm)` | `esptool write_flash`; closes the port session first |
 | `reset_stm32()` | `st-flash reset` |
 | `probe_stlink()` | `st-info --probe` |
+
+## Example session
+
+`examples/session.py` drives the server as a real MCP client over stdio, using pyserial's `loop://` so it runs without hardware:
+
+```
+tools: list_ports, open_port, close_port, write_line, read_lines, clear_buffer, flash_stm32, flash_esp32, reset_stm32, probe_stlink
+
+> open_port            {"port": "loop://", "baud": 115200, "already_open": false}
+> write_line           {"port": "loop://", "bytes_written": 7}          # "status"
+> write_line           {"port": "loop://", "bytes_written": 22}         # "ERR: imu init timeout"
+> read_lines (grep=ERR)
+  {"port": "loop://", "last_seq": 2, "count": 1,
+   "lines": [{"seq": 2, "t": 1792127056.6, "text": "ERR: imu init timeout"}]}
+> flash_stm32 without confirm
+  {"flashed": false, "reason": "set confirm=true to flash; this overwrites the firmware on the board"}
+> close_port           {"port": "loop://", "closed": true, "lines_captured": 2}
+```
 
 ## Safety model
 
